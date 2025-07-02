@@ -1,6 +1,6 @@
 # The PlayZone
 
-### **About PlayZone:**
+### **💻 About PlayZone:**
 
 PlayZone is a gaming hub designed to bring gamers together through individual gaming experiences. This platform offers a variety of single-player games.
 
