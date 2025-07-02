@@ -1,14 +1,17 @@
 # 🎮 The PlayZone
 
 ### **💻 About PlayZone:**
-
 PlayZone is a gaming hub designed to bring gamers together through individual gaming experiences. This platform offers a variety of single-player games.
+
+### **🌐 Tech Stack:**
+- HTML: Used to define the main layout.
+- CSS: Used for entire visual representation.
+- Javascript: Used to handle all the logic, user interaction and dynamic content.
 
 ### **🚀 Features:**
 - **12 Classic Games:** A diverse collection of puzzle, arcade, and card games to enjoy.
 - **Persistent Player Profiles:** Create multiple player profiles! Your scores and progress are saved in the browser's local storage.
 - **Dynamic Scoring:** A unified scoring system (Total Score / Max Possible Score) tracks your performance across all games.
-- **How-to-Play Instructions:** Each game features a pop-up modal with clear, concise instructions before you begin.
 - **Sleek, Modern UI:** A futuristic "glassmorphism" design with a dynamic, animated gradient background and neon accents.
 - **Fully Responsive:** The interface adapts smoothly to both desktop and mobile screens for gaming on the go.
 - **Zero Dependencies:** Built with vanilla HTML, CSS, and JavaScript. No frameworks, no libraries, no build steps required.
@@ -68,3 +71,6 @@ PlayZone is a gaming hub designed to bring gamers together through individual ga
     <td>The classic card game of 21. Try to beat the dealer without going bust.</td>
   </tr>
 </table>	
+
+### **🤝 Connect:**
+Contributions are welcomed from the gaming community! If you'd like to contribute to PlayZone, please fork the repository, make your changes, and submit a pull request.
