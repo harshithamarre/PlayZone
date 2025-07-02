@@ -1,0 +1,562 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+/* --- Keyframes for Background Animation --- */
+@keyframes animated-gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- General Body and Font Styles --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    background: linear-gradient(135deg, #1d2b64, #c45677, #1d2b64, #4fa3a5);
+    background-size: 400% 400%;
+    animation: animated-gradient 15s ease infinite;
+}
+
+/* --- Main App Container (Glassmorphism) --- */
+#app-container {
+    background: rgba(20, 20, 40, 0.6);
+    padding: 30px 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+}
+
+header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: #ffffff;
+    margin: 0;
+    font-weight: 700;
+    font-size: 2.5em;
+    text-shadow: 0 0 10px rgba(135, 220, 220, 0.5);
+}
+
+h2, h3 {
+    color: #e0e0e0;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+h3 {
+    color: #00ffff; /* Cyan accent for game titles */
+}
+
+#player-info {
+    margin-top: 15px;
+    font-size: 1.1em;
+    color: #cccccc;
+}
+
+#player-name-display {
+    font-weight: bold;
+    margin-right: 20px;
+    color: #fff;
+}
+
+/* --- Screen Management --- */
+.screen { display: none; }
+.screen.active { display: block; }
+#game-area { display: none; }
+
+/* --- Buttons --- */
+button {
+    background: linear-gradient(145deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2));
+    color: #f0f0f0;
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    padding: 12px 25px;
+    border-radius: 50px; /* Pill-shaped buttons */
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    margin: 8px;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.2), inset 0 0 5px rgba(0, 255, 255, 0.1);
+}
+
+button:hover {
+    background: linear-gradient(145deg, rgba(0, 255, 255, 0.4), rgba(255, 0, 255, 0.4));
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.6), inset 0 0 8px rgba(0, 255, 255, 0.2);
+    transform: translateY(-3px) scale(1.05);
+    color: #fff;
+}
+
+button:disabled {
+    background: rgba(100, 100, 100, 0.3);
+    border-color: rgba(100, 100, 100, 0.5);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* --- Secondary Button Style --- */
+.secondary-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 0, 255, 0.6);
+}
+
+.secondary-btn:hover {
+    background: rgba(255, 0, 255, 0.2);
+    border-color: #ff00ff;
+}
+
+#back-to-menu {
+    margin-bottom: 25px;
+    display: none;
+}
+
+/* --- Input Fields --- */
+input[type="text"], input[type="number"] {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 255, 255, 0.4);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 1em;
+    color: #f0f0f0;
+    width: 60%;
+    max-width: 300px;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+/* ... (All previous styles from the enhanced version remain the same up to the welcome back section) ... */
+
+/* --- Welcome Back & Main Menu is now Player Selection --- */
+#player-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 25px 0;
+    max-height: 40vh;
+    overflow-y: auto;
+    padding-right: 10px; /* For scrollbar spacing */
+}
+
+.player-profile-btn {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.player-profile-btn:hover {
+    background: rgba(0, 255, 255, 0.15);
+    border-color: #00ffff;
+    transform: scale(1.02);
+}
+
+.player-profile-btn .player-name {
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.player-profile-btn .player-score {
+    font-size: 1em;
+    color: #ccc;
+}
+
+#create-player-screen .secondary-btn {
+    margin-top: 10px;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+#main-menu #switch-player-btn {
+    margin-top: 25px;
+}
+
+.game-screen {
+    padding: 20px;
+    border-radius: 15px;
+    background-color: rgba(0, 0, 10, 0.3);
+}
+
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.4);
+    min-height: 24px;
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #00ffff;
+}
+
+.hint {
+    font-style: italic;
+    color: #aaa;
+}
+
+/* --- Tic-Tac-Toe Styles --- */
+#tictactoe-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 240px;
+    height: 240px;
+    margin: 20px auto;
+    gap: 5px;
+}
+
+.tictactoe-cell {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3em;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: rgba(0, 255, 255, 0.05);
+    border-radius: 10px;
+    transition: background-color 0.3s;
+}
+.tictactoe-cell:hover { background-color: rgba(0, 255, 255, 0.15); }
+.tictactoe-cell:nth-child(odd) { color: #00ffff; }
+.tictactoe-cell:nth-child(even) { color: #ff00ff; }
+
+/* --- Hangman Styles --- */
+#hangman-word {
+    font-size: 2em;
+    letter-spacing: 0.5em;
+    margin: 20px 0;
+    color: #fff;
+    font-weight: 600;
+}
+#hangman-drawing {
+    font-family: 'Courier New', Courier, monospace;
+    white-space: pre;
+    font-size: 1.1em;
+    line-height: 1.2;
+    margin: 10px auto;
+    padding: 15px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+    width: fit-content;
+    color: #ff4d4d;
+}
+
+/* --- Quiz Styles --- */
+.quiz-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+.quiz-grid button { width: 100%; border-radius: 10px; }
+.quiz-grid button.correct {
+    background: rgba(0, 255, 127, 0.4);
+    border-color: #00ff7f;
+    box-shadow: 0 0 15px #00ff7f;
+}
+.quiz-grid button.incorrect {
+    background: rgba(255, 77, 77, 0.4);
+    border-color: #ff4d4d;
+    box-shadow: 0 0 15px #ff4d4d;
+}
+
+/* --- Memory Match Styles --- */
+#memory-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    max-width: 400px;
+    margin: 20px auto;
+    perspective: 1000px;
+}
+.memory-card {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+.memory-card .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5em;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+.card-front {
+    background: rgba(255, 255, 255, 0.9);
+    color: #1d2b64;
+    transform: rotateY(180deg);
+}
+.card-back {
+    background: linear-gradient(135deg, #00ffff, #ff00ff);
+}
+.memory-card.is-flipped { transform: rotateY(180deg); }
+.memory-card.is-matched {
+    transform: rotateY(180deg);
+    cursor: default;
+    opacity: 0.7;
+}
+.memory-card.is-matched .card-front {
+    background: #00ff7f;
+    box-shadow: 0 0 20px #00ff7f;
+}
+
+@media (max-width: 600px) {
+    body { padding: 10px; }
+    #app-container { padding: 20px; }
+    h1 { font-size: 2em; }
+    .quiz-grid { grid-template-columns: 1fr; }
+    #memory-board { max-width: 300px; gap: 5px; }
+    .memory-card { width: 65px; height: 65px; }
+}
+
+/* --- Minesweeper Styles --- */
+.minesweeper-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.2);
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+#mines-left {
+    color: #ff00ff; /* Magenta */
+}
+
+#game-status {
+    color: #00ffff; /* Cyan */
+}
+
+#minesweeper-board {
+    display: grid;
+    background-color: rgba(0, 0, 10, 0.3);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 10px;
+    gap: 4px; /* Space between cells */
+    margin: 0 auto;
+    width: fit-content;
+}
+
+.mine-cell {
+    width: 35px;
+    height: 35px;
+    background-color: rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.mine-cell:hover {
+    background-color: rgba(0, 255, 255, 0.25);
+}
+
+.mine-cell.revealed {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.1);
+    cursor: default;
+}
+
+.mine-cell.flagged {
+    font-size: 1.5em;
+}
+
+.mine-cell.mine-hit {
+    background-color: #ff4d4d;
+    border-color: red;
+    box-shadow: 0 0 15px red;
+    font-size: 1.5em;
+}
+
+/* Number Colors */
+.mine-cell.c1 { color: #00ffff; }
+.mine-cell.c2 { color: #90ee90; }
+.mine-cell.c3 { color: #ffadad; }
+.mine-cell.c4 { color: #87cefa; }
+.mine-cell.c5 { color: #ff00ff; }
+.mine-cell.c6 { color: #ffd700; }
+.mine-cell.c7 { color: #ffffff; }
+.mine-cell.c8 { color: #a9a9a9; }
+
+
+@media (max-width: 600px) {
+    /* ... (previous media query styles) ... */
+    .mine-cell {
+        width: 30px;
+        height: 30px;
+        font-size: 1em;
+    }
+}
+
+/* General sub-display for scores/status within games */
+.game-sub-display {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #00ffff;
+    margin-bottom: 15px;
+}
+
+/* Canvas-based games */
+#snake-canvas, #brickbreaker-canvas {
+    background-color: rgba(0, 0, 10, 0.5);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+    margin: 0 auto;
+    display: block;
+}
+
+/* Connect Four */
+#connectfour-board {
+    margin: 20px auto;
+    background-color: rgba(0, 0, 50, 0.5);
+    border-radius: 10px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    width: fit-content;
+}
+
+.connectfour-slot {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.connectfour-slot.player1 { background-color: #ff00ff; box-shadow: 0 0 10px #ff00ff; }
+.connectfour-slot.player2 { background-color: #ffd700; box-shadow: 0 0 10px #ffd700; }
+.connectfour-column:hover .connectfour-slot:not(.player1):not(.player2) {
+    background-color: rgba(255,255,255,0.1);
+}
+
+/* Sudoku */
+#sudoku-board {
+    margin: 20px auto;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    width: fit-content;
+    border: 3px solid #00ffff;
+    border-radius: 5px;
+    gap: 1px;
+    background-color: rgba(0, 255, 255, 0.5);
+}
+
+.sudoku-cell {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 10, 0.7);
+    color: #fff;
+    font-size: 1.5em;
+    text-align: center;
+    border: none;
+}
+
+.sudoku-cell:focus {
+    outline: 2px solid #ff00ff;
+}
+
+/* Add thicker lines for 3x3 subgrids */
+.sudoku-cell:nth-child(3n) { border-right: 2px solid rgba(0, 255, 255, 0.5); }
+.sudoku-cell:nth-child(9n) { border-right: none; }
+#sudoku-board tr:nth-child(3n) .sudoku-cell { border-bottom: 2px solid rgba(0, 255, 255, 0.5); }
+#sudoku-board tr:last-child .sudoku-cell { border-bottom: none; }
+
+.sudoku-cell.given {
+    color: #00ffff;
+    font-weight: bold;
+}
+.sudoku-controls { margin-top: 15px; }
+
+/* Blackjack */
+.blackjack-area {
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+.hand-area {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    min-height: 120px;
+    align-items: center;
+}
+.card {
+    width: 80px;
+    height: 110px;
+    background-color: white;
+    border-radius: 8px;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5px;
+    font-size: 1.5em;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+.card.red { color: #D22B2B; }
+.card .suit { font-size: 0.8em; }
+.card .rank { align-self: flex-end; }
+
+.blackjack-controls { display: flex; justify-content: center; gap: 10px; }
+
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .connectfour-slot { width: 40px; height: 40px; }
+    .sudoku-cell { width: 32px; height: 32px; font-size: 1.2em;}
+    .card { width: 60px; height: 85px; font-size: 1.2em;}
+}
