@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Game Hub</title>
+    <title>The PlayZone</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -20,15 +20,12 @@
             </div>
         </header>
 
-        <!-- Player Selection Screen -->
+        <!-- Player Selection & Creation Screens -->
         <div id="player-selection-screen" class="screen">
             <h2>Select Your Profile</h2>
-            <div id="player-list">
-            </div>
+            <div id="player-list"></div>
             <button id="create-new-player-btn">Create New Player</button>
         </div>
-
-        <!-- Create New Player Screen -->
         <div id="create-player-screen" class="screen">
             <h2>Enter a new player name:</h2>
             <input type="text" id="player-name-input" placeholder="Your Name">
@@ -60,7 +57,6 @@
         <div id="game-area">
             <button id="back-to-menu">← Back to Menu</button>
             
-            <!-- Rock-Paper-Scissors Game -->
             <div id="rps-game" class="game-screen">
                 <h3>Rock-Paper-Scissors</h3>
                 <p>Choose your weapon!</p>
@@ -70,9 +66,9 @@
                     <button data-choice="s">Scissors</button>
                 </div>
                 <div id="rps-result" class="result-box"></div>
+                <button id="rps-play-again" class="play-again-btn">Play Again</button>
             </div>
 
-            <!-- Hangman Game -->
             <div id="hangman-game" class="game-screen">
                 <h3>Hangman</h3>
                 <p id="hangman-hint" class="hint"></p>
@@ -82,17 +78,17 @@
                 <p>Guess a letter:</p>
                 <input type="text" id="hangman-input" maxlength="1">
                 <div id="hangman-result" class="result-box"></div>
+                <button id="hangman-play-again" class="play-again-btn">Play Again</button>
             </div>
             
-            <!-- Quiz Game -->
             <div id="quiz-game" class="game-screen">
                 <h3>Quiz Game</h3>
                 <div id="quiz-question"></div>
                 <div id="quiz-options" class="quiz-grid"></div>
                 <div id="quiz-result" class="result-box"></div>
+                <button id="quiz-play-again" class="play-again-btn">Play Again</button>
             </div>
 
-            <!-- Tic-Tac-Toe Game -->
             <div id="tictactoe-game" class="game-screen">
                 <h3>Tic-Tac-Toe</h3>
                 <p id="tictactoe-status"></p>
@@ -100,23 +96,22 @@
                 <button id="tictactoe-restart">Restart Game</button>
             </div>
 
-            <!-- Guess the Number Game -->
             <div id="guess-number-game" class="game-screen">
                 <h3>Guess the Number (1-100)</h3>
                 <input type="number" id="guess-input" placeholder="Enter your guess">
                 <button id="guess-submit">Guess</button>
                 <div id="guess-result" class="result-box"></div>
+                <button id="guess-play-again" class="play-again-btn">Play Again</button>
             </div>
 
-            <!-- Memory Match Game -->
             <div id="memory-game" class="game-screen">
                 <h3>Memory Match</h3>
                 <p>Find all the matching pairs!</p>
                 <div id="memory-board"></div>
                 <div id="memory-result" class="result-box"></div>
+                <button id="memory-play-again" class="play-again-btn">Play Again</button>
             </div>
 
-            <!-- Minesweeper Game -->
             <div id="minesweeper-game" class="game-screen">
                 <h3>Minesweeper</h3>
                 <div class="minesweeper-controls">
@@ -127,41 +122,39 @@
                 <button id="minesweeper-restart">Restart Game</button>
             </div>
 
-            <!-- Snake Game Screen -->
             <div id="snake-game" class="game-screen">
                 <h3>Snake</h3>
                 <div id="snake-score" class="game-sub-display">Score: 0</div>
                 <canvas id="snake-canvas"></canvas>
+                <button id="snake-play-again" class="play-again-btn">Play Again</button>
             </div>
             
-            <!-- Brick Breaker Game Screen -->
             <div id="brickbreaker-game" class="game-screen">
                 <h3>Brick Breaker</h3>
                 <div id="brickbreaker-info" class="game-sub-display">Score: 0 | Lives: 3</div>
                 <canvas id="brickbreaker-canvas"></canvas>
+                <button id="brickbreaker-play-again" class="play-again-btn">Play Again</button>
             </div>
 
-            <!-- Connect Four Game Screen -->
             <div id="connectfour-game" class="game-screen">
                 <h3>Connect Four</h3>
                 <div id="connectfour-status" class="game-sub-display">Your Turn</div>
                 <div id="connectfour-board"></div>
+                <button id="connectfour-play-again" class="play-again-btn">Play Again</button>
             </div>
 
-            <!-- Sudoku Game Screen -->
             <div id="sudoku-game" class="game-screen">
                 <h3>Sudoku</h3>
                 <div id="sudoku-board"></div>
                 <div class="sudoku-controls">
                     <button id="sudoku-check-btn">Check Solution</button>
-                    <button id="sudoku-reset-btn">Reset Board</button>
+                    <button id="sudoku-reset-btn">New Puzzle</button>
                 </div>
             </div>
 
-            <!-- Blackjack Game Screen -->
             <div id="blackjack-game" class="game-screen">
                 <h3>Blackjack</h3>
-                <div id="blackjack-status" class="game-sub-display">Place your bet!</div>
+                <div id="blackjack-status" class="game-sub-display"></div>
                 <div class="blackjack-area">
                     <h4>Dealer's Hand (<span id="dealer-score">0</span>)</h4>
                     <div id="dealer-hand" class="hand-area"></div>
@@ -178,7 +171,6 @@
             </div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
