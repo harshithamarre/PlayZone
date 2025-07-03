@@ -89,6 +89,19 @@ document.addEventListener('DOMContentLoaded', () => {
         showScreen('player-selection-screen');
     }
 
+    // The main game launcher
+    function launchGame(gameId) {
+        if (activeGameLoop) { cancelAnimationFrame(activeGameLoop); clearInterval(activeGameLoop); activeGameLoop = null; }
+        if (activeKeydownHandler) { document.removeEventListener('keydown', activeKeydownHandler); activeKeydownHandler = null; }
+        switch (gameId) {
+            case 'rps': initRpsGame(); break; case 'hangman': initHangmanGame(); break; case 'quiz': initQuizGame(); break; case 'tictactoe': initTictactoeGame(); break;
+            case 'guess-number': initGuessNumberGame(); break; case 'memory': initMemoryGame(); break; case 'minesweeper': initMinesweeperGame(); break;
+            case 'snake': initSnakeGame(); break; case 'brickbreaker': initBrickBreakerGame(); break; case 'connectfour': initConnectFourGame(); break;
+            case 'sudoku': initSudokuGame(); break; case 'blackjack': initBlackjackGame(); break;
+        }
+        showGame(`${gameId}-game`);
+    }
+
     // --- EVENT LISTENERS ---
     app.buttons.createNewPlayer.addEventListener('click', () => showScreen('create-player-screen'));
     app.buttons.backToSelection.addEventListener('click', showPlayerSelectionScreen);
@@ -153,29 +166,42 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- GAME IMPLEMENTATIONS ---
 
     function initRpsGame() {
-        const choices = ['r', 'p', 's'];
-        const choiceMap = { r: 'Rock', p: 'Paper', s: 'Scissors' };
-        const buttons = document.querySelectorAll('#rps-game button');
+        const buttons = document.querySelectorAll('#rps-game .rps-choices button');
         const resultDiv = document.getElementById('rps-result');
+        const playAgainBtn = document.getElementById('rps-play-again');
+
+        resultDiv.textContent = '';
+        buttons.forEach(b => b.disabled = false);
+        playAgainBtn.style.display = 'none';
+        playAgainBtn.onclick = initRpsGame;
+        
         buttons.forEach(button => {
             button.onclick = () => {
+                const choices = ['r', 'p', 's'];
+                const choiceMap = { r: 'Rock', p: 'Paper', s: 'Scissors' };
                 const playerChoice = button.dataset.choice;
                 const computerChoice = choices[Math.floor(Math.random() * choices.length)];
                 let resultText;
-                if (playerChoice === computerChoice) { resultText = "It's a draw!";
-                } else if ((playerChoice === 'r' && computerChoice === 's') || (playerChoice === 'p' && computerChoice === 'r') || (playerChoice === 's' && computerChoice === 'p')) {
+                
+                if (playerChoice === computerChoice) { resultText = "It's a draw!"; } 
+                else if ((playerChoice === 'r' && computerChoice === 's') || (playerChoice === 'p' && computerChoice === 'r') || (playerChoice === 's' && computerChoice === 'p')) {
                     resultText = "You win!"; currentTotalScore++;
                 } else { resultText = "Computer wins!"; }
+                
                 currentMaxScore++;
                 resultDiv.innerHTML = `You chose ${choiceMap[playerChoice]}.<br>Computer chose ${choiceMap[computerChoice]}.<br><strong>${resultText}</strong>`;
                 updateHeaderDisplay();
                 buttons.forEach(b => b.disabled = true);
-                setTimeout(() => buttons.forEach(b => b.disabled = false), 1500);
+                playAgainBtn.style.display = 'inline-block';
             };
         });
     }
 
     function initHangmanGame() {
+        const playAgainBtn = document.getElementById('hangman-play-again');
+        playAgainBtn.style.display = 'none';
+        playAgainBtn.onclick = initHangmanGame;
+        
         const wordList = [{ word: "javascript", hint: "A popular web language" }, { word: "elephant", hint: "A large mammal" }];
         const hangmanParts = [
             '  +---+\n  |   |\n      |\n      |\n      |\n      |\n=========',
@@ -188,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
         let selectedWord, wordState, incorrectGuesses, remainingTries;
         const hintEl = document.getElementById('hangman-hint'), drawingEl = document.getElementById('hangman-drawing'), wordEl = document.getElementById('hangman-word'), guessesEl = document.getElementById('hangman-guesses'), inputEl = document.getElementById('hangman-input'), resultEl = document.getElementById('hangman-result');
+        
         function setup() {
             const { word, hint } = wordList[Math.floor(Math.random() * wordList.length)];
             selectedWord = word; wordState = Array(word.length).fill('_'); incorrectGuesses = []; remainingTries = 6;
@@ -196,36 +223,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         function updateDisplay() {
             wordEl.textContent = wordState.join(' ');
-            drawingEl.textContent = hangmanParts[6 - remainingTries] || '';
+            drawingEl.textContent = hangmanParts[6 - remainingTries];
             guessesEl.textContent = `Incorrect Guesses: ${incorrectGuesses.join(', ')}`;
+        }
+        function checkGameState() {
+            let gameEnded = false;
+            if (!wordState.includes('_')) {
+                resultEl.textContent = `Congratulations! You guessed: ${selectedWord}`;
+                currentTotalScore++; updateHeaderDisplay(); gameEnded = true;
+            } else if (remainingTries <= 0) {
+                resultEl.textContent = `Game Over! The word was: ${selectedWord}`; gameEnded = true;
+            }
+            if(gameEnded){ inputEl.disabled = true; playAgainBtn.style.display = 'inline-block'; }
         }
         function checkGuess(letter) {
             if (!/^[a-z]$/.test(letter) || incorrectGuesses.includes(letter) || wordState.includes(letter)) return;
-            if (selectedWord.includes(letter)) {
-                selectedWord.split('').forEach((char, i) => { if (char === letter) wordState[i] = letter; });
+            if (selectedWord.includes(letter)) { selectedWord.split('').forEach((char, i) => { if (char === letter) wordState[i] = letter; });
             } else { incorrectGuesses.push(letter); remainingTries--; }
             updateDisplay(); checkGameState();
-        }
-        function checkGameState() {
-            if (!wordState.includes('_')) {
-                resultEl.textContent = `Congratulations! You guessed: ${selectedWord}`;
-                currentTotalScore++; inputEl.disabled = true; updateHeaderDisplay();
-            } else if (remainingTries <= 0) {
-                resultEl.textContent = `Game Over! The word was: ${selectedWord}`; inputEl.disabled = true;
-            }
         }
         inputEl.oninput = () => { checkGuess(inputEl.value.toLowerCase()); inputEl.value = ''; };
         setup(); currentMaxScore++; updateHeaderDisplay();
     }
 
     function initQuizGame() {
-        const allQuestions = [{ question: "Which bird lays the largest egg?", options: ["Owl", "Ostrich", "Kingfisher"], answer: 1 }, { question: "Who painted the Mona Lisa?", options: ["da Vinci", "Picasso"], answer: 0 }];
+        const playAgainBtn = document.getElementById('quiz-play-again');
+        playAgainBtn.style.display = 'none';
+        playAgainBtn.onclick = initQuizGame;
+
+        const allQuestions = [{ question: "Which bird lays the largest egg?", options: ["Owl", "Ostrich"], answer: 1 }, { question: "Who painted the Mona Lisa?", options: ["da Vinci", "Picasso"], answer: 0 }];
         let availableQuestions = [...allQuestions], quizScore = 0;
         const questionEl = document.getElementById('quiz-question'), optionsEl = document.getElementById('quiz-options'), resultEl = document.getElementById('quiz-result');
+        
         function showNextQuestion() {
             if (availableQuestions.length === 0) {
                 resultEl.textContent = `Quiz Complete! Score: ${quizScore}/${allQuestions.length}.`;
-                currentTotalScore += quizScore; updateHeaderDisplay(); questionEl.textContent = ''; optionsEl.innerHTML = ''; return;
+                currentTotalScore += quizScore; updateHeaderDisplay(); questionEl.textContent = ''; optionsEl.innerHTML = '';
+                playAgainBtn.style.display = 'inline-block';
+                return;
             }
             const q = availableQuestions.splice(Math.floor(Math.random() * availableQuestions.length), 1)[0];
             questionEl.textContent = q.question; optionsEl.innerHTML = ''; resultEl.textContent = '';
@@ -248,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let board, currentPlayer, gameActive;
         function setup() {
             board = Array(9).fill(''); currentPlayer = 'X'; gameActive = true;
-            statusEl.textContent = `Player ${currentPlayer}'s turn`;
+            statusEl.textContent = `Player ${currentPlayer}'s turn`; restartBtn.style.display = 'none';
             boardEl.innerHTML = '';
             for (let i = 0; i < 9; i++) {
                 const cell = document.createElement('div'); cell.className = 'tictactoe-cell'; cell.dataset.index = i;
@@ -260,45 +295,51 @@ document.addEventListener('DOMContentLoaded', () => {
             if (board[i] !== '' || !gameActive) return;
             board[i] = currentPlayer; e.target.textContent = currentPlayer;
             if (checkWin()) {
-                statusEl.textContent = `Player ${currentPlayer} wins!`; currentTotalScore++; gameActive = false; updateHeaderDisplay();
+                statusEl.textContent = `Player ${currentPlayer} wins!`; currentTotalScore++; gameActive = false; updateHeaderDisplay(); restartBtn.style.display = 'inline-block';
             } else if (board.every(cell => cell)) {
-                statusEl.textContent = "It's a draw!"; gameActive = false;
+                statusEl.textContent = "It's a draw!"; gameActive = false; restartBtn.style.display = 'inline-block';
             } else { currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; statusEl.textContent = `Player ${currentPlayer}'s turn`; }
         }
-        function checkWin() {
-            const win = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            return win.some(cond => cond.every(i => board[i] === currentPlayer));
-        }
+        function checkWin() { const win=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return win.some(c=>c.every(i=>board[i]===currentPlayer)); }
         restartBtn.onclick = setup; setup(); currentMaxScore++; updateHeaderDisplay();
     }
 
     function initGuessNumberGame() {
         const number = Math.floor(Math.random() * 100) + 1;
-        const inputEl = document.getElementById('guess-input'), submitBtn = document.getElementById('guess-submit'), resultEl = document.getElementById('guess-result');
-        inputEl.value = ''; resultEl.textContent = 'Make a guess!'; submitBtn.disabled = false;
+        const inputEl = document.getElementById('guess-input'), submitBtn = document.getElementById('guess-submit'), resultEl = document.getElementById('guess-result'), playAgainBtn = document.getElementById('guess-play-again');
+        
+        inputEl.value = ''; resultEl.textContent = 'Make a guess!'; submitBtn.disabled = false; playAgainBtn.style.display = 'none';
+        playAgainBtn.onclick = initGuessNumberGame;
+
         submitBtn.onclick = () => {
             const guess = parseInt(inputEl.value, 10);
             if (isNaN(guess)) { resultEl.textContent = "Please enter a valid number."; return; }
             if (guess < number) { resultEl.textContent = "Too low! Try again.";
             } else if (guess > number) { resultEl.textContent = "Too high! Try again.";
-            } else { resultEl.textContent = `Correct! The number was ${number}.`; currentTotalScore++; submitBtn.disabled = true; updateHeaderDisplay(); }
+            } else { 
+                resultEl.textContent = `Correct! The number was ${number}.`; currentTotalScore++; submitBtn.disabled = true;
+                playAgainBtn.style.display = 'inline-block'; updateHeaderDisplay();
+            }
             inputEl.value = ''; inputEl.focus();
         };
         currentMaxScore++; updateHeaderDisplay();
     }
     
     function initMemoryGame() {
-        const boardEl = document.getElementById('memory-board'), resultEl = document.getElementById('memory-result');
+        const boardEl = document.getElementById('memory-board'), resultEl = document.getElementById('memory-result'), playAgainBtn = document.getElementById('memory-play-again');
+        playAgainBtn.style.display = 'none';
+        playAgainBtn.onclick = initMemoryGame;
+
         const symbols = ['A','B','C','D','A','B','C','D'];
         let flippedCards = [], matchedPairs = 0;
+
         function setup() {
             symbols.sort(() => Math.random() - 0.5);
-            boardEl.innerHTML = ''; resultEl.textContent = ''; matchedPairs = 0;
+            boardEl.innerHTML = ''; resultEl.textContent = 'Find all matching pairs!'; matchedPairs = 0;
             symbols.forEach(symbol => {
                 const card = document.createElement('div'); card.className = 'memory-card'; card.dataset.symbol = symbol;
                 card.innerHTML = `<div class="card-face card-back"></div><div class="card-face card-front">${symbol}</div>`;
-                card.addEventListener('click', () => flipCard(card));
-                boardEl.appendChild(card);
+                card.addEventListener('click', () => flipCard(card)); boardEl.appendChild(card);
             });
         }
         function flipCard(card) {
@@ -312,7 +353,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 c1.classList.add('is-matched'); c2.classList.add('is-matched');
                 matchedPairs++; flippedCards = [];
                 if (matchedPairs === symbols.length / 2) {
-                    resultEl.textContent = "Congratulations! You found all pairs!"; currentTotalScore++; updateHeaderDisplay();
+                    resultEl.textContent = "Congratulations! You found all pairs!"; currentTotalScore++;
+                    playAgainBtn.style.display = 'inline-block'; updateHeaderDisplay();
                 }
             } else { setTimeout(() => { c1.classList.remove('is-flipped'); c2.classList.remove('is-flipped'); flippedCards = []; }, 1000); }
         }
@@ -392,30 +434,22 @@ document.addEventListener('DOMContentLoaded', () => {
         setup(); restartBtn.onclick = setup; currentMaxScore++; updateHeaderDisplay();
     }
 
-    /**
-     * Snake Game (Corrected & Enhanced)
-     */
     function initSnakeGame() {
-        const canvas = document.getElementById('snake-canvas'), scoreEl = document.getElementById('snake-score'), ctx = canvas.getContext('2d'), gridSize = 20;
+        const canvas = document.getElementById('snake-canvas'), scoreEl = document.getElementById('snake-score'), ctx = canvas.getContext('2d'), gridSize = 20, playAgainBtn = document.getElementById('snake-play-again');
         canvas.width = 400; canvas.height = 400;
         let snake, food, score, direction, nextDirection, gameActive;
 
         function setup() {
-            snake = [{x:10, y:10}];
-            food = {};
-            score = 0;
-            direction = {x:0, y:0};
-            nextDirection = {x:0, y:0};
-            gameActive = true;
-            scoreEl.textContent = "Score: 0. Use Arrow Keys to Start!";
-            placeFood();
-            
+            snake = [{x:10, y:10}]; food = {}; score = 0; direction = {x:0, y:0}; nextDirection = {x:0, y:0}; gameActive = true;
+            playAgainBtn.style.display = 'none';
+            playAgainBtn.onclick = initSnakeGame;
+            scoreEl.textContent = "Score: 0. Use Arrow Keys to Start!"; placeFood();
             if (activeGameLoop) clearInterval(activeGameLoop);
             if (activeKeydownHandler) document.removeEventListener('keydown', activeKeydownHandler);
-            
             activeGameLoop = setInterval(gameLoop, 120);
             activeKeydownHandler = handleKeydown;
             document.addEventListener('keydown', activeKeydownHandler);
+            draw();
         }
 
         function placeFood() {
@@ -429,50 +463,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function gameLoop() {
             if (!gameActive) return;
-
             direction = nextDirection;
-            
-            if (direction.x === 0 && direction.y === 0) {
-                draw(); return;
-            }
-
+            if (direction.x === 0 && direction.y === 0) { draw(); return; }
             const head = {x: snake[0].x + direction.x, y: snake[0].y + direction.y};
-            
-            if (head.x < 0 || head.x >= canvas.width/gridSize || head.y < 0 || head.y >= canvas.height/gridSize || snake.some(s => s.x === head.x && s.y === head.y)) {
-                endGame();
-                return;
-            }
-
+            if (head.x<0||head.x>=canvas.width/gridSize||head.y<0||head.y>=canvas.height/gridSize||snake.some(s=>s.x===head.x&&s.y===head.y)) { endGame(); return; }
             snake.unshift(head);
-
-            if (head.x === food.x && head.y === food.y) {
-                score++;
-                currentTotalScore++;
-                updateHeaderDisplay();
-                scoreEl.textContent = `Score: ${score}`;
-                placeFood();
-            } else {
-                snake.pop();
-            }
+            if (head.x===food.x&&head.y===food.y) { score++; currentTotalScore++; updateHeaderDisplay(); scoreEl.textContent=`Score: ${score}`; placeFood(); } else { snake.pop(); }
             draw();
         }
         
         function endGame() {
-            gameActive = false;
-            clearInterval(activeGameLoop);
-            activeGameLoop = null;
-            document.removeEventListener('keydown', activeKeydownHandler);
-            activeKeydownHandler = null;
-            scoreEl.textContent = `Game Over! Final Score: ${score}.`;
+            gameActive=false; clearInterval(activeGameLoop); activeGameLoop=null; document.removeEventListener('keydown', activeKeydownHandler); activeKeydownHandler=null;
+            scoreEl.textContent = `Game Over! Final Score: ${score}.`; playAgainBtn.style.display = 'inline-block';
         }
-
         function draw() {
-            ctx.fillStyle = 'rgba(0,0,10,0.8)';
-            ctx.fillRect(0,0,canvas.width,canvas.height);
-            ctx.fillStyle = '#00ffff';
-            snake.forEach(s => ctx.fillRect(s.x*gridSize, s.y*gridSize, gridSize - 1, gridSize - 1));
-            ctx.fillStyle = '#ff00ff';
-            ctx.fillRect(food.x*gridSize, food.y*gridSize, gridSize - 1, gridSize - 1);
+            ctx.fillStyle='rgba(0,0,10,0.8)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle='#00ffff'; snake.forEach(s=>ctx.fillRect(s.x*gridSize,s.y*gridSize,gridSize-1,gridSize-1));
+            ctx.fillStyle='#ff00ff'; ctx.fillRect(food.x*gridSize,food.y*gridSize,gridSize-1,gridSize-1);
         }
 
         function handleKeydown(e) {
@@ -490,40 +497,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function initBrickBreakerGame() {
-        const canvas = document.getElementById('brickbreaker-canvas'), infoEl = document.getElementById('brickbreaker-info'), ctx = canvas.getContext('2d');
-        canvas.width = 600; canvas.height = 400;
+        const canvas=document.getElementById('brickbreaker-canvas'), infoEl=document.getElementById('brickbreaker-info'), ctx=canvas.getContext('2d'), playAgainBtn=document.getElementById('brickbreaker-play-again');
+        canvas.width=600; canvas.height=400;
         let ball, paddle, bricks, score, lives;
         function setup() {
-            score = 0; lives = 3;
-            paddle = { x: canvas.width/2 - 50, y: canvas.height-20, width: 100, height: 10 };
-            ball = { x: canvas.width/2, y: canvas.height-30, radius: 8, dx: 4, dy: -4 };
-            bricks = []; const rows=5, cols=8, w=60, h=20, p=10;
-            for(let r=0;r<rows;r++) { bricks[r]=[]; for(let c=0;c<cols;c++) bricks[r][c] = {x:c*(w+p)+35, y:r*(h+p)+30, width:w, height:h, visible:true}; }
+            score=0; lives=3; playAgainBtn.style.display = 'none';
+            paddle={x:canvas.width/2-50,y:canvas.height-20,width:100,height:10}; ball={x:canvas.width/2,y:canvas.height-30,radius:8,dx:4,dy:-4};
+            bricks=[];const rows=5,cols=8,w=60,h=20,p=10;
+            for(let r=0;r<rows;r++){bricks[r]=[];for(let c=0;c<cols;c++)bricks[r][c]={x:c*(w+p)+35,y:r*(h+p)+30,width:w,height:h,visible:true};}
             updateInfo();
+            if (activeGameLoop) cancelAnimationFrame(activeGameLoop);
+            activeGameLoop = requestAnimationFrame(gameLoop);
         }
-        function updateInfo() { infoEl.textContent = `Score: ${score} | Lives: ${lives}`; }
+        function updateInfo() { infoEl.textContent=`Score: ${score} | Lives: ${lives}`; }
         function gameLoop() {
-            ball.x += ball.dx; ball.y += ball.dy;
-            if(ball.x+ball.radius>canvas.width||ball.x-ball.radius<0) ball.dx*=-1;
-            if(ball.y-ball.radius<0) ball.dy*=-1;
+            ball.x+=ball.dx; ball.y+=ball.dy;
+            if(ball.x+ball.radius>canvas.width||ball.x-ball.radius<0)ball.dx*=-1;
+            if(ball.y-ball.radius<0)ball.dy*=-1;
             if(ball.y+ball.radius>canvas.height){
                 lives--; updateInfo();
-                if(lives<=0){ infoEl.textContent = `Game Over! Final Score: ${score}`; activeGameLoop=null; return; }
-                ball.x = canvas.width/2; ball.y=canvas.height-30; ball.dx=4; ball.dy=-4;
+                if(lives<=0){infoEl.textContent=`Game Over! Final Score: ${score}`; activeGameLoop=null; playAgainBtn.style.display='inline-block'; return;}
+                ball.x=canvas.width/2; ball.y=canvas.height-30; ball.dx=4; ball.dy=-4;
             }
-            if(ball.y+ball.radius>paddle.y&&ball.x>paddle.x&&ball.x<paddle.x+paddle.width) ball.dy*=-1;
-            let bricksLeft = false;
-            bricks.forEach(row=>row.forEach(brick=>{
-                if(brick.visible){
-                    bricksLeft = true;
-                    if(ball.x>brick.x&&ball.x<brick.x+brick.width&&ball.y>brick.y&&ball.y<brick.y+brick.height){
-                        brick.visible=false; ball.dy*=-1; score+=10; currentTotalScore+=10; updateHeaderDisplay(); updateInfo();
-                    }
-                }
+            if(ball.y+ball.radius>paddle.y&&ball.x>paddle.x&&ball.x<paddle.x+paddle.width)ball.dy*=-1;
+            let bricksLeft=false;
+            bricks.forEach(row=>row.forEach(b=>{
+                if(b.visible){bricksLeft=true;if(ball.x>b.x&&ball.x<b.x+b.width&&ball.y>b.y&&ball.y<b.y+b.height){b.visible=false;ball.dy*=-1;score+=10;currentTotalScore+=10;updateHeaderDisplay();updateInfo();}}
             }));
-            if (!bricksLeft) { infoEl.textContent = `You Win! Final Score: ${score}`; activeGameLoop=null; currentTotalScore += 100; updateHeaderDisplay(); return; }
-            draw();
-            if(activeGameLoop) activeGameLoop = requestAnimationFrame(gameLoop);
+            if(!bricksLeft){infoEl.textContent=`You Win! Score: ${score}`;activeGameLoop=null;currentTotalScore+=100;updateHeaderDisplay();playAgainBtn.style.display='inline-block';return;}
+            draw(); if(activeGameLoop)activeGameLoop=requestAnimationFrame(gameLoop);
         }
         function draw() {
             ctx.fillStyle = 'rgba(0,0,10,0.8)'; ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -531,31 +533,30 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.beginPath(); ctx.arc(ball.x,ball.y,ball.radius,0,Math.PI*2); ctx.fillStyle='#ff00ff'; ctx.fill(); ctx.closePath();
             bricks.forEach(row=>row.forEach(brick=>{ if(brick.visible){ ctx.fillStyle='#90ee90'; ctx.fillRect(brick.x,brick.y,brick.width,brick.height);}}));
         }
-        canvas.onmousemove = e => { let x = e.clientX-canvas.getBoundingClientRect().left; if(x>paddle.width/2&&x<canvas.width-paddle.width/2) paddle.x=x-paddle.width/2; };
-        setup(); activeGameLoop = requestAnimationFrame(gameLoop);
+        canvas.onmousemove=e=>{let x=e.clientX-canvas.getBoundingClientRect().left;if(x>paddle.width/2&&x<canvas.width-paddle.width/2)paddle.x=x-paddle.width/2;};
+        playAgainBtn.onclick = setup; setup();
     }
     
     function initConnectFourGame() {
-        const boardEl=document.getElementById('connectfour-board'), statusEl=document.getElementById('connectfour-status');
-        const R=6,C=7; let board, player, active;
+        const boardEl=document.getElementById('connectfour-board'), statusEl=document.getElementById('connectfour-status'), playAgainBtn=document.getElementById('connectfour-play-again');
+        const R=6,C=7; let board,player,active;
         function setup(){
-            board=Array(R).fill().map(()=>Array(C).fill(0)); player=1; active=true;
-            statusEl.textContent = `Player 1's Turn (Magenta)`; boardEl.innerHTML='';
+            board=Array.from({length:R},()=>Array(C).fill(0)); player=1; active=true;
+            statusEl.textContent=`Player 1's Turn (Magenta)`; boardEl.innerHTML='';
+            playAgainBtn.style.display = 'none';
             for(let c=0;c<C;c++){
-                const colEl = document.createElement('div'); colEl.className='connectfour-column'; colEl.dataset.col=c;
-                colEl.addEventListener('click', handleClick);
-                for(let r=0;r<R;r++){ const slot=document.createElement('div'); slot.className='connectfour-slot'; colEl.appendChild(slot); }
+                const colEl=document.createElement('div'); colEl.className='connectfour-column'; colEl.dataset.col=c;
+                colEl.addEventListener('click',handleClick);
+                for(let r=0;r<R;r++){const slot=document.createElement('div');slot.className='connectfour-slot';colEl.appendChild(slot);}
                 boardEl.appendChild(colEl);
             }
         }
         function handleClick(e){
-            if(!active)return; const c=parseInt(e.currentTarget.dataset.col,10);
-            let r=R-1; while(r>=0&&board[r][c]!==0)r--;
-            if(r<0)return;
-            board[r][c]=player; updateUI();
-            if(checkWin(r,c)){ statusEl.textContent=`Player ${player} Wins!`; active=false; if(player===1)currentTotalScore++; updateHeaderDisplay();
-            } else if(board.flat().every(cell=>cell!==0)){ statusEl.textContent="Draw!"; active=false;
-            } else { player=player===1?2:1; statusEl.textContent=`Player ${player}'s Turn (${player===1?'Magenta':'Yellow'})`; }
+            if(!active)return; const c=parseInt(e.currentTarget.dataset.col,10); let r=R-1; while(r>=0&&board[r][c]!==0)r--;
+            if(r<0)return; board[r][c]=player; updateUI();
+            if(checkWin(r,c)){ statusEl.textContent=`Player ${player} Wins!`; active=false; if(player===1)currentTotalScore++; updateHeaderDisplay(); playAgainBtn.style.display='inline-block';
+            }else if(board.flat().every(cell=>cell!==0)){ statusEl.textContent="Draw!"; active=false; playAgainBtn.style.display='inline-block';
+            }else{ player=player===1?2:1; statusEl.textContent=`Player ${player}'s Turn (${player===1?'Magenta':'Yellow'})`; }
         }
         function updateUI(){
             for(let r=0;r<R;r++) for(let c=0;c<C;c++){
