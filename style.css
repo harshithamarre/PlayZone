@@ -24,7 +24,7 @@ body {
     animation: animated-gradient 15s ease infinite;
 }
 
-/* --- Main App Container (Glassmorphism) --- */
+/* --- Main App Container --- */
 #app-container {
     background: rgba(20, 20, 40, 0.6);
     padding: 30px 40px;
@@ -144,9 +144,6 @@ input[type="text"]:focus, input[type="number"]:focus {
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
-/* ... (All previous styles from the enhanced version remain the same up to the welcome back section) ... */
-
-/* --- Welcome Back & Main Menu is now Player Selection --- */
 #player-list {
     display: flex;
     flex-direction: column;
@@ -363,11 +360,11 @@ input[type="text"]:focus, input[type="number"]:focus {
 }
 
 #mines-left {
-    color: #ff00ff; /* Magenta */
+    color: #ff00ff;
 }
 
 #game-status {
-    color: #00ffff; /* Cyan */
+    color: #00ffff;
 }
 
 #minesweeper-board {
@@ -376,7 +373,7 @@ input[type="text"]:focus, input[type="number"]:focus {
     border: 1px solid rgba(0, 255, 255, 0.2);
     border-radius: 10px;
     padding: 10px;
-    gap: 4px; /* Space between cells */
+    gap: 4px;
     margin: 0 auto;
     width: fit-content;
 }
@@ -429,7 +426,6 @@ input[type="text"]:focus, input[type="number"]:focus {
 
 
 @media (max-width: 600px) {
-    /* ... (previous media query styles) ... */
     .mine-cell {
         width: 30px;
         height: 30px;
@@ -437,7 +433,6 @@ input[type="text"]:focus, input[type="number"]:focus {
     }
 }
 
-/* General sub-display for scores/status within games */
 .game-sub-display {
     font-size: 1.2em;
     font-weight: 600;
@@ -445,7 +440,6 @@ input[type="text"]:focus, input[type="number"]:focus {
     margin-bottom: 15px;
 }
 
-/* Canvas-based games */
 #snake-canvas, #brickbreaker-canvas {
     background-color: rgba(0, 0, 10, 0.5);
     border: 1px solid rgba(0, 255, 255, 0.2);
@@ -507,7 +501,6 @@ input[type="text"]:focus, input[type="number"]:focus {
     outline: 2px solid #ff00ff;
 }
 
-/* Add thicker lines for 3x3 subgrids */
 .sudoku-cell:nth-child(3n) { border-right: 2px solid rgba(0, 255, 255, 0.5); }
 .sudoku-cell:nth-child(9n) { border-right: none; }
 #sudoku-board tr:nth-child(3n) .sudoku-cell { border-bottom: 2px solid rgba(0, 255, 255, 0.5); }
@@ -554,7 +547,7 @@ input[type="text"]:focus, input[type="number"]:focus {
 .blackjack-controls { display: flex; justify-content: center; gap: 10px; }
 
 .play-again-btn {
-    display: none; /* Hidden by default */
+    display: none;
     margin-top: 20px;
 }
 
