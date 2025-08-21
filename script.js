@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             menu: document.getElementById('main-menu'),
         },
         displays: {
+            playerInfo: document.getElementById('player-info'), // <-- MODIFICATION: Added reference to the container
             name: document.getElementById('player-name-display'),
             score: document.getElementById('score-display'),
             playerList: document.getElementById('player-list'),
@@ -44,10 +45,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const storedPlayers = localStorage.getItem('gameHubPlayers');
         allPlayers = storedPlayers ? JSON.parse(storedPlayers) : {};
     }
+
+    // <-- MODIFICATION START: Updated the updateHeaderDisplay function -->
     function updateHeaderDisplay() {
-        app.displays.name.textContent = currentPlayerName ? `Player: ${currentPlayerName}` : 'No Player';
-        app.displays.score.textContent = `Score: ${currentTotalScore}/${currentMaxScore}`;
+        if (currentPlayerName) {
+            // If a player is selected, show the info and update the text
+            app.displays.playerInfo.style.display = 'block';
+            app.displays.name.textContent = `Player: ${currentPlayerName}`;
+            app.displays.score.textContent = `Score: ${currentTotalScore}/${currentMaxScore}`;
+        } else {
+            // If no player is selected, hide the entire info div
+            app.displays.playerInfo.style.display = 'none';
+        }
     }
+    // <-- MODIFICATION END -->
+
     function showScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         if (screenId) document.getElementById(screenId).classList.add('active');
@@ -84,6 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     function showPlayerSelectionScreen() {
         currentPlayerName = '';
+        currentTotalScore = 0;
+        currentMaxScore = 0;
         updateHeaderDisplay();
         populatePlayerList();
         showScreen('player-selection-screen');
