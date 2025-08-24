@@ -59,7 +59,7 @@ h2, h3 {
 }
 
 h3 {
-    color: #00ffff;
+    color: #00ffff; /* Cyan accent for game titles */
 }
 
 #player-info {
@@ -85,7 +85,7 @@ button {
     color: #f0f0f0;
     border: 1px solid rgba(0, 255, 255, 0.5);
     padding: 12px 25px;
-    border-radius: 50px;
+    border-radius: 50px; /* Pill-shaped buttons */
     cursor: pointer;
     font-size: 1em;
     font-weight: 400;
@@ -151,7 +151,7 @@ input[type="text"]:focus, input[type="number"]:focus {
     margin: 25px 0;
     max-height: 40vh;
     overflow-y: auto;
-    padding-right: 10px;
+    padding-right: 10px; /* For scrollbar spacing */
 }
 
 .player-profile-btn {
@@ -220,6 +220,7 @@ input[type="text"]:focus, input[type="number"]:focus {
     color: #aaa;
 }
 
+/* General sub-display for scores/status within games */
 .game-sub-display {
     font-size: 1.2em;
     font-weight: 600;
@@ -270,11 +271,11 @@ input[type="text"]:focus, input[type="number"]:focus {
 }
 
 .checker-piece.p1 {
-    background-color: #ff4d4d;
+    background-color: #ff4d4d; /* Red */
 }
 
 .checker-piece.p2 {
-    background-color: #f0f0f0;
+    background-color: #f0f0f0; /* White */
 }
 
 .checker-piece.king::after {
@@ -344,25 +345,6 @@ input[type="text"]:focus, input[type="number"]:focus {
     color: #ff4d4d;
 }
 
-/* --- Quiz Styles --- */
-.quiz-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-top: 20px;
-}
-.quiz-grid button { width: 100%; border-radius: 10px; }
-.quiz-grid button.correct {
-    background: rgba(0, 255, 127, 0.4);
-    border-color: #00ff7f;
-    box-shadow: 0 0 15px #00ff7f;
-}
-.quiz-grid button.incorrect {
-    background: rgba(255, 77, 77, 0.4);
-    border-color: #ff4d4d;
-    box-shadow: 0 0 15px #ff4d4d;
-}
-
 /* --- Memory Match Styles --- */
 #memory-board {
     display: grid;
@@ -410,15 +392,6 @@ input[type="text"]:focus, input[type="number"]:focus {
 .memory-card.is-matched .card-front {
     background: #00ff7f;
     box-shadow: 0 0 20px #00ff7f;
-}
-
-@media (max-width: 600px) {
-    body { padding: 10px; }
-    #app-container { padding: 20px; }
-    h1 { font-size: 2em; }
-    .quiz-grid { grid-template-columns: 1fr; }
-    #memory-board { max-width: 300px; gap: 5px; }
-    .memory-card { width: 65px; height: 65px; }
 }
 
 /* --- Minesweeper Styles --- */
@@ -489,7 +462,6 @@ input[type="text"]:focus, input[type="number"]:focus {
     font-size: 1.5em;
 }
 
-/* Number Colors */
 .mine-cell.c1 { color: #00ffff; }
 .mine-cell.c2 { color: #90ee90; }
 .mine-cell.c3 { color: #ffadad; }
@@ -499,23 +471,6 @@ input[type="text"]:focus, input[type="number"]:focus {
 .mine-cell.c7 { color: #ffffff; }
 .mine-cell.c8 { color: #a9a9a9; }
 
-
-@media (max-width: 600px) {
-    .mine-cell {
-        width: 30px;
-        height: 30px;
-        font-size: 1em;
-    }
-}
-
-/* General sub-display for scores/status within games */
-.game-sub-display {
-    font-size: 1.2em;
-    font-weight: 600;
-    color: #00ffff;
-    margin-bottom: 15px;
-}
-
 #snake-canvas, #brickbreaker-canvas {
     background-color: rgba(0, 0, 10, 0.5);
     border: 1px solid rgba(0, 255, 255, 0.2);
@@ -524,7 +479,7 @@ input[type="text"]:focus, input[type="number"]:focus {
     display: block;
 }
 
-/* Connect Four */
+/* --- Connect Four Styles --- */
 #connectfour-board {
     margin: 20px auto;
     background-color: rgba(0, 0, 50, 0.5);
@@ -588,7 +543,7 @@ input[type="text"]:focus, input[type="number"]:focus {
 }
 .sudoku-controls { margin-top: 15px; }
 
-/* --- BlackJack Styles --- */
+/* Blackjack */
 .blackjack-area {
     background: rgba(0,0,0,0.2);
     border-radius: 10px;
@@ -622,15 +577,19 @@ input[type="text"]:focus, input[type="number"]:focus {
 
 .blackjack-controls { display: flex; justify-content: center; gap: 10px; }
 
-.play-again-btn {
-    display: none;
-    margin-top: 20px;
-}
 
+/* Responsive Adjustments */
 @media (max-width: 600px) {
     body { padding: 10px; }
     #app-container { padding: 20px; }
     h1 { font-size: 2em; }
+    #memory-board { max-width: 300px; gap: 5px; }
+    .memory-card { width: 65px; height: 65px; }
+    .mine-cell {
+        width: 30px;
+        height: 30px;
+        font-size: 1em;
+    }
     #checkers-board { width: 320px; height: 320px; }
     .checkers-square { width: 40px; height: 40px; }
     .checker-piece.king::after { font-size: 18px; }
