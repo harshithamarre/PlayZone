@@ -39,7 +39,6 @@
             <div class="menu-grid">
                 <button class="game-btn" data-game="rps">Rock-Paper-Scissors</button>
                 <button class="game-btn" data-game="hangman">Hangman</button>
-                <button class="game-btn" data-game="quiz">Quiz Game</button>
                 <button class="game-btn" data-game="tictactoe">Tic-Tac-Toe</button>
                 <button class="game-btn" data-game="guess-number">Guess the Number</button>
                 <button class="game-btn" data-game="memory">Memory Match</button>
@@ -49,7 +48,7 @@
                 <button class="game-btn" data-game="connectfour">Connect Four</button>
                 <button class="game-btn" data-game="sudoku">Sudoku</button>
                 <button class="game-btn" data-game="blackjack">Blackjack</button>
-                <button class="game-btn" data-game="checkers">Checkers</button> <!-- Added Checkers -->
+                <button class="game-btn" data-game="checkers">Checkers</button>
             </div>
             <button id="switch-player-btn" class="secondary-btn">Switch Player</button>
         </div>
@@ -57,6 +56,7 @@
         <!-- Game Area -->
         <div id="game-area">
             <button id="back-to-menu">← Back to Menu</button>
+            
             <div id="rps-game" class="game-screen">
                 <h3>Rock-Paper-Scissors</h3>
                 <p>Choose your weapon!</p>
@@ -79,14 +79,6 @@
                 <input type="text" id="hangman-input" maxlength="1">
                 <div id="hangman-result" class="result-box"></div>
                 <button id="hangman-play-again" class="play-again-btn">Play Again</button>
-            </div>
-            
-            <div id="quiz-game" class="game-screen">
-                <h3>Quiz Game</h3>
-                <div id="quiz-question"></div>
-                <div id="quiz-options" class="quiz-grid"></div>
-                <div id="quiz-result" class="result-box"></div>
-                <button id="quiz-play-again" class="play-again-btn">Play Again</button>
             </div>
 
             <div id="tictactoe-game" class="game-screen">
@@ -169,7 +161,7 @@
                     <button id="blackjack-new-hand-btn">New Hand</button>
                 </div>
             </div>
-            
+
             <div id="checkers-game" class="game-screen">
                 <h3>Checkers</h3>
                 <div id="checkers-status" class="game-sub-display">Player 1's Turn</div>
