@@ -31,10 +31,6 @@ PlayZone is a gaming hub designed to bring gamers together through individual ga
     <td>Guess the letters to solve the secret word before the hangman is complete.</td>
   </tr>
   <tr>
-    <td>Quiz Game</td>
-    <td>Test your knowledge with a set of randomized trivia questions.</td>
-  </tr>
-  <tr>
     <td>Tic-Tac-Toe</td>
     <td>The timeless two-player game of Xs and Os on a 3x3 grid.</td>
   </tr>
@@ -60,7 +56,7 @@ PlayZone is a gaming hub designed to bring gamers together through individual ga
   </tr>
   <tr>
     <td>Connect Four</td>
-    <td>A two-player strategy game. Be the first to connect four of your colored discs in a row.</td>
+    <td>A two-player strategy game. The first player to form a line of four of their own discs - horizontally, vertically, or diagonally wins.</td>
   </tr>
   <tr>
     <td>Sudoku</td>
@@ -68,7 +64,11 @@ PlayZone is a gaming hub designed to bring gamers together through individual ga
   </tr>
   <tr>
     <td>Blackjack</td>
-    <td>The classic card game of 21. Try to beat the dealer without going bust.</td>
+    <td>The classic card game of 21. Your goal is to get a hand value closer to 21 than the dealer's without going over.</td>
+  </tr>
+  <tr>
+    <td>Checkers Game</td>
+    <td>The traditional two-player strategy board game. Move your pieces diagonally, capturing your opponent's pieces by jumping over them. Reach the opposite end of the board to crown a piece as a powerful "king."</td>
   </tr>
 </table>	
 
