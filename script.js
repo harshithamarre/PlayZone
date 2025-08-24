@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             menu: document.getElementById('main-menu'),
         },
         displays: {
-            playerInfo: document.getElementById('player-info'), // <-- MODIFICATION: Added reference to the container
+            playerInfo: document.getElementById('player-info'),
             name: document.getElementById('player-name-display'),
             score: document.getElementById('score-display'),
             playerList: document.getElementById('player-list'),
@@ -45,21 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const storedPlayers = localStorage.getItem('gameHubPlayers');
         allPlayers = storedPlayers ? JSON.parse(storedPlayers) : {};
     }
-
-    // <-- MODIFICATION START: Updated the updateHeaderDisplay function -->
     function updateHeaderDisplay() {
         if (currentPlayerName) {
-            // If a player is selected, show the info and update the text
             app.displays.playerInfo.style.display = 'block';
             app.displays.name.textContent = `Player: ${currentPlayerName}`;
             app.displays.score.textContent = `Score: ${currentTotalScore}/${currentMaxScore}`;
         } else {
-            // If no player is selected, hide the entire info div
             app.displays.playerInfo.style.display = 'none';
         }
     }
-    // <-- MODIFICATION END -->
-
     function showScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         if (screenId) document.getElementById(screenId).classList.add('active');
@@ -112,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'guess-number': initGuessNumberGame(); break; case 'memory': initMemoryGame(); break; case 'minesweeper': initMinesweeperGame(); break;
             case 'snake': initSnakeGame(); break; case 'brickbreaker': initBrickBreakerGame(); break; case 'connectfour': initConnectFourGame(); break;
             case 'sudoku': initSudokuGame(); break; case 'blackjack': initBlackjackGame(); break;
+            case 'checkers': initCheckersGame(); break;
         }
         showGame(`${gameId}-game`);
     }
@@ -149,35 +144,213 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     app.buttons.gameBtns.forEach(button => {
         button.addEventListener('click', () => {
-            const game = button.dataset.game;
-            if (activeGameLoop) {
-                cancelAnimationFrame(activeGameLoop);
-                clearInterval(activeGameLoop);
-                activeGameLoop = null;
-            }
-            if (activeKeydownHandler) {
-                document.removeEventListener('keydown', activeKeydownHandler);
-                activeKeydownHandler = null;
-            }
-            switch (game) {
-                case 'rps': initRpsGame(); break;
-                case 'hangman': initHangmanGame(); break;
-                case 'quiz': initQuizGame(); break;
-                case 'tictactoe': initTictactoeGame(); break;
-                case 'guess-number': initGuessNumberGame(); break;
-                case 'memory': initMemoryGame(); break;
-                case 'minesweeper': initMinesweeperGame(); break;
-                case 'snake': initSnakeGame(); break;
-                case 'brickbreaker': initBrickBreakerGame(); break;
-                case 'connectfour': initConnectFourGame(); break;
-                case 'sudoku': initSudokuGame(); break;
-                case 'blackjack': initBlackjackGame(); break;
-            }
-            showGame(`${game}-game`);
+            launchGame(button.dataset.game);
         });
     });
 
     // --- GAME IMPLEMENTATIONS ---
+
+    function initCheckersGame() {
+        const boardEl = document.getElementById('checkers-board');
+        const statusEl = document.getElementById('checkers-status');
+        const playAgainBtn = document.getElementById('checkers-play-again');
+
+        const P1 = 1, P2 = 2, P1K = 3, P2K = 4;
+        let boardState, currentPlayer, selectedPiece, gameActive;
+
+        function setup() {
+            boardState = Array(8).fill(0).map(() => Array(8).fill(0));
+            currentPlayer = P1;
+            selectedPiece = null;
+            gameActive = true;
+
+            // Initial piece setup
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    if ((r + c) % 2 !== 0) { // Dark squares only
+                        if (r < 3) boardState[r][c] = P2;
+                        else if (r > 4) boardState[r][c] = P1;
+                    }
+                }
+            }
+            
+            statusEl.textContent = "Player 1's Turn (Red)";
+            playAgainBtn.style.display = 'none';
+            playAgainBtn.onclick = setup;
+            renderBoard();
+        }
+
+        function renderBoard() {
+            boardEl.innerHTML = '';
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const square = document.createElement('div');
+                    square.className = `checkers-square ${(r + c) % 2 === 0 ? 'light' : 'dark'}`;
+                    square.dataset.r = r;
+                    square.dataset.c = c;
+
+                    const pieceVal = boardState[r][c];
+                    if (pieceVal !== 0) {
+                        const piece = document.createElement('div');
+                        piece.className = 'checker-piece';
+                        if (pieceVal === P1 || pieceVal === P1K) piece.classList.add('p1');
+                        else piece.classList.add('p2');
+                        if (pieceVal === P1K || pieceVal === P2K) piece.classList.add('king');
+                        square.appendChild(piece);
+                    }
+                    boardEl.appendChild(square);
+                }
+            }
+            boardEl.onclick = handleBoardClick;
+        }
+        
+        function handleBoardClick(e) {
+            if (!gameActive) return;
+            const square = e.target.closest('.checkers-square');
+            if (!square) return;
+
+            const r = parseInt(square.dataset.r);
+            const c = parseInt(square.dataset.c);
+            const pieceVal = boardState[r][c];
+
+            if (selectedPiece) { // A piece is already selected, try to move
+                const validMoves = getValidMoves(selectedPiece.r, selectedPiece.c);
+                const move = validMoves.find(m => m.r === r && m.c === c);
+                if (move) {
+                    makeMove(selectedPiece.r, selectedPiece.c, r, c, move.isJump);
+                } else {
+                    clearSelection();
+                }
+            } else if (pieceVal !== 0) { // No piece selected, try to select one
+                const isP1Piece = (pieceVal === P1 || pieceVal === P1K);
+                const isP2Piece = (pieceVal === P2 || pieceVal === P2K);
+
+                // --- MODIFICATION START: Simplified piece selection logic ---
+                if ((currentPlayer === P1 && isP1Piece) || (currentPlayer === P2 && isP2Piece)) {
+                    selectPiece(r, c);
+                }
+                // --- MODIFICATION END ---
+            }
+        }
+        
+        function selectPiece(r, c) {
+            clearSelection();
+            selectedPiece = { r, c };
+            const validMoves = getValidMoves(r, c);
+            
+            if(validMoves.length > 0){
+                const pieceEl = boardEl.children[r * 8 + c].firstChild;
+                if (pieceEl) pieceEl.classList.add('selected');
+                validMoves.forEach(move => {
+                    boardEl.children[move.r * 8 + move.c].classList.add('valid-move');
+                });
+            } else {
+                // If there are no valid moves for this piece, don't select it
+                selectedPiece = null;
+            }
+        }
+
+        function clearSelection() {
+            selectedPiece = null;
+            document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.valid-move').forEach(el => el.classList.remove('valid-move'));
+        }
+
+        function getValidMoves(r, c) {
+            const piece = boardState[r][c];
+            const isKing = (piece === P1K || piece === P2K);
+            const forwardDir = (piece === P1 || piece === P1K) ? -1 : 1;
+            let moves = [];
+            let jumps = [];
+
+            const directions = isKing ? [-1, 1] : [forwardDir];
+            for (const dir of directions) {
+                for (const side of [-1, 1]) {
+                    let nextR = r + dir, nextC = c + side;
+                    // Check regular move
+                    if (isValidSquare(nextR, nextC) && boardState[nextR][nextC] === 0) {
+                        moves.push({ r: nextR, c: nextC, isJump: false });
+                    }
+                    
+                    let jumpR = r + dir * 2, jumpC = c + side * 2;
+                    const opponent = (currentPlayer === P1) ? [P2, P2K] : [P1, P1K];
+                    // Check jump
+                    if (isValidSquare(jumpR, jumpC) && boardState[jumpR][jumpC] === 0 && isValidSquare(nextR, nextC) && opponent.includes(boardState[nextR][nextC])) {
+                        jumps.push({ r: jumpR, c: jumpC, isJump: true });
+                    }
+                }
+            }
+            return moves.concat(jumps);
+        }
+        
+        function isValidSquare(r, c) { return r >= 0 && r < 8 && c >= 0 && c < 8; }
+
+        function makeMove(fromR, fromC, toR, toC, isJump) {
+            boardState[toR][toC] = boardState[fromR][fromC];
+            boardState[fromR][fromC] = 0;
+            
+            if ((currentPlayer === P1 && toR === 0) || (currentPlayer === P2 && toR === 7)) {
+                boardState[toR][toC] += 2; // Promote to king
+            }
+            
+            if (isJump) {
+                const jumpedR = (fromR + toR) / 2;
+                const jumpedC = (fromC + toC) / 2;
+                boardState[jumpedR][jumpedC] = 0;
+                
+                const nextJumps = getValidMoves(toR, toC).filter(m => m.isJump);
+                if (nextJumps.length > 0) {
+                    clearSelection();
+                    renderBoard();
+                    selectPiece(toR, toC); // Same player's turn for multi-jump
+                    return;
+                }
+            }
+            switchPlayer();
+        }
+        
+        function switchPlayer() {
+            currentPlayer = (currentPlayer === P1) ? P2 : P1;
+            statusEl.textContent = `Player ${currentPlayer}'s Turn (${currentPlayer === P1 ? 'Red' : 'White'})`;
+            clearSelection();
+            renderBoard();
+            checkForWin();
+        }
+
+        function checkForWin() {
+            let p1Pieces = 0, p2Pieces = 0, p1Moves = 0, p2Moves = 0;
+            for (let r=0; r<8; r++) {
+                for (let c=0; c<8; c++) {
+                    const piece = boardState[r][c];
+                    if (piece === P1 || piece === P1K) {
+                        p1Pieces++;
+                        if (currentPlayer === P1) p1Moves += getValidMoves(r, c).length;
+                    } else if (piece === P2 || piece === P2K) {
+                        p2Pieces++;
+                        if (currentPlayer === P2) p2Moves += getValidMoves(r, c).length;
+                    }
+                }
+            }
+
+            if (p2Pieces === 0 || (currentPlayer === P2 && p2Moves === 0)) {
+                endGame("Player 1 (Red) Wins!");
+                currentTotalScore++;
+            } else if (p1Pieces === 0 || (currentPlayer === P1 && p1Moves === 0)) {
+                endGame("Player 2 (White) Wins!");
+            }
+        }
+
+        function endGame(message) {
+            gameActive = false;
+            statusEl.textContent = message;
+            playAgainBtn.style.display = 'inline-block';
+            updateHeaderDisplay();
+        }
+
+        setup();
+        currentMaxScore++;
+        updateHeaderDisplay();
+    }
 
     function initRpsGame() {
         const buttons = document.querySelectorAll('#rps-game .rps-choices button');
@@ -675,7 +848,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         newHandBtn.onclick=start; start(); currentMaxScore++; updateHeaderDisplay();
     }
-    
+
     // --- INITIALIZATION ---
     loadAllPlayers();
     showPlayerSelectionScreen();
