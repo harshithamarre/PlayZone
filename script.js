@@ -102,10 +102,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (activeGameLoop) { cancelAnimationFrame(activeGameLoop); clearInterval(activeGameLoop); activeGameLoop = null; }
         if (activeKeydownHandler) { document.removeEventListener('keydown', activeKeydownHandler); activeKeydownHandler = null; }
         switch (gameId) {
-            case 'rps': initRpsGame(); break; case 'hangman': initHangmanGame(); break; case 'quiz': initQuizGame(); break; case 'tictactoe': initTictactoeGame(); break;
-            case 'guess-number': initGuessNumberGame(); break; case 'memory': initMemoryGame(); break; case 'minesweeper': initMinesweeperGame(); break;
-            case 'snake': initSnakeGame(); break; case 'brickbreaker': initBrickBreakerGame(); break; case 'connectfour': initConnectFourGame(); break;
-            case 'sudoku': initSudokuGame(); break; case 'blackjack': initBlackjackGame(); break;
+            case 'rps': initRpsGame(); break;
+            case 'hangman': initHangmanGame(); break;
+            case 'tictactoe': initTictactoeGame(); break;
+            case 'guess-number': initGuessNumberGame(); break;
+            case 'memory': initMemoryGame(); break;
+            case 'minesweeper': initMinesweeperGame(); break;
+            case 'snake': initSnakeGame(); break;
+            case 'brickbreaker': initBrickBreakerGame(); break;
+            case 'connectfour': initConnectFourGame(); break;
+            case 'sudoku': initSudokuGame(); break;
+            case 'blackjack': initBlackjackGame(); break;
             case 'checkers': initCheckersGame(); break;
         }
         showGame(`${gameId}-game`);
@@ -163,7 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
             selectedPiece = null;
             gameActive = true;
 
-            // Initial piece setup
             for (let r = 0; r < 8; r++) {
                 for (let c = 0; c < 8; c++) {
                     if ((r + c) % 2 !== 0) { // Dark squares only
@@ -212,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const c = parseInt(square.dataset.c);
             const pieceVal = boardState[r][c];
 
-            if (selectedPiece) { // A piece is already selected, try to move
+            if (selectedPiece) {
                 const validMoves = getValidMoves(selectedPiece.r, selectedPiece.c);
                 const move = validMoves.find(m => m.r === r && m.c === c);
                 if (move) {
@@ -284,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
             boardState[fromR][fromC] = 0;
             
             if ((currentPlayer === P1 && toR === 0) || (currentPlayer === P2 && toR === 7)) {
-                boardState[toR][toC] += 2; // Promote to king
+                boardState[toR][toC] += 2;
             }
             
             if (isJump) {
@@ -425,38 +431,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         inputEl.oninput = () => { checkGuess(inputEl.value.toLowerCase()); inputEl.value = ''; };
         setup(); currentMaxScore++; updateHeaderDisplay();
-    }
-
-    function initQuizGame() {
-        const playAgainBtn = document.getElementById('quiz-play-again');
-        playAgainBtn.style.display = 'none';
-        playAgainBtn.onclick = initQuizGame;
-
-        const allQuestions = [{ question: "Which bird lays the largest egg?", options: ["Owl", "Ostrich"], answer: 1 }, { question: "Who painted the Mona Lisa?", options: ["da Vinci", "Picasso"], answer: 0 }];
-        let availableQuestions = [...allQuestions], quizScore = 0;
-        const questionEl = document.getElementById('quiz-question'), optionsEl = document.getElementById('quiz-options'), resultEl = document.getElementById('quiz-result');
-        
-        function showNextQuestion() {
-            if (availableQuestions.length === 0) {
-                resultEl.textContent = `Quiz Complete! Score: ${quizScore}/${allQuestions.length}.`;
-                currentTotalScore += quizScore; updateHeaderDisplay(); questionEl.textContent = ''; optionsEl.innerHTML = '';
-                playAgainBtn.style.display = 'inline-block';
-                return;
-            }
-            const q = availableQuestions.splice(Math.floor(Math.random() * availableQuestions.length), 1)[0];
-            questionEl.textContent = q.question; optionsEl.innerHTML = ''; resultEl.textContent = '';
-            q.options.forEach((opt, i) => {
-                const btn = document.createElement('button');
-                btn.textContent = opt; btn.onclick = () => checkAnswer(q, i, btn); optionsEl.appendChild(btn);
-            });
-        }
-        function checkAnswer(q, sel, btn) {
-            Array.from(optionsEl.children).forEach(b => b.disabled = true);
-            if (sel === q.answer) { btn.classList.add('correct'); quizScore++; resultEl.textContent = "Correct!";
-            } else { btn.classList.add('incorrect'); optionsEl.children[q.answer].classList.add('correct'); resultEl.textContent = `Incorrect! Answer: ${q.options[q.answer]}.`; }
-            setTimeout(showNextQuestion, 2000);
-        }
-        currentMaxScore += allQuestions.length; updateHeaderDisplay(); showNextQuestion();
     }
 
     function initTictactoeGame() {
