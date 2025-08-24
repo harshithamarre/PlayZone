@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentTotalScore = 0;
     let currentMaxScore = 0;
     let allPlayers = {};
-    let activeGameLoop = null; // To hold setInterval or requestAnimationFrame ID
-    let activeKeydownHandler = null; // To manage the global keydown listener
+    let activeGameLoop = null;
+    let activeKeydownHandler = null;
 
     // --- DOM ELEMENT REFERENCES ---
     const app = {
@@ -149,7 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- GAME IMPLEMENTATIONS ---
-
     function initCheckersGame() {
         const boardEl = document.getElementById('checkers-board');
         const statusEl = document.getElementById('checkers-status');
@@ -221,15 +220,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     clearSelection();
                 }
-            } else if (pieceVal !== 0) { // No piece selected, try to select one
+            } else if (pieceVal !== 0) {
                 const isP1Piece = (pieceVal === P1 || pieceVal === P1K);
                 const isP2Piece = (pieceVal === P2 || pieceVal === P2K);
 
-                // --- MODIFICATION START: Simplified piece selection logic ---
                 if ((currentPlayer === P1 && isP1Piece) || (currentPlayer === P2 && isP2Piece)) {
                     selectPiece(r, c);
                 }
-                // --- MODIFICATION END ---
             }
         }
         
@@ -245,7 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     boardEl.children[move.r * 8 + move.c].classList.add('valid-move');
                 });
             } else {
-                // If there are no valid moves for this piece, don't select it
                 selectedPiece = null;
             }
         }
@@ -267,14 +263,12 @@ document.addEventListener('DOMContentLoaded', () => {
             for (const dir of directions) {
                 for (const side of [-1, 1]) {
                     let nextR = r + dir, nextC = c + side;
-                    // Check regular move
                     if (isValidSquare(nextR, nextC) && boardState[nextR][nextC] === 0) {
                         moves.push({ r: nextR, c: nextC, isJump: false });
                     }
                     
                     let jumpR = r + dir * 2, jumpC = c + side * 2;
                     const opponent = (currentPlayer === P1) ? [P2, P2K] : [P1, P1K];
-                    // Check jump
                     if (isValidSquare(jumpR, jumpC) && boardState[jumpR][jumpC] === 0 && isValidSquare(nextR, nextC) && opponent.includes(boardState[nextR][nextC])) {
                         jumps.push({ r: jumpR, c: jumpC, isJump: true });
                     }
@@ -302,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (nextJumps.length > 0) {
                     clearSelection();
                     renderBoard();
-                    selectPiece(toR, toC); // Same player's turn for multi-jump
+                    selectPiece(toR, toC);
                     return;
                 }
             }
