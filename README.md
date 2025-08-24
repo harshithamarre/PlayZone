@@ -1,7 +1,7 @@
 # 🎮 The PlayZone
 
 ### **💻 About PlayZone:**
-PlayZone is a gaming hub designed to bring gamers together through individual gaming experiences. This platform offers a variety of single-player games.
+PlayZone is a gaming hub designed as a foundation for a rich gaming experience. It features a wide range of single-player challenges to test your skills, as well as timeless two-player games perfect for competing with a friend on the same screen, with a future vision to expand with features that bring gamers together.
 
 ### **🌐 Tech Stack:**
 - HTML: Used to define the main layout.
