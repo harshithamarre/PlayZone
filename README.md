@@ -72,7 +72,7 @@ PlayZone is a gaming hub designed as a foundation for a rich gaming experience. 
   </tr>
 </table>	
 
-### **Future Implementations:**
+### **🕰 Future Implementations:**
 *   **More Games:** Implementation of games like **Chess**, **Reversi**, and a simple **Typing Game**.
 *   **Enhanced User Experience:** Addition of sound effects for gameplay, difficulty settings for games like Sudoku and Minesweeper, and game-specific visual themes.
 *   **Backend and User Accounts:** Integration of a backend service. This will allow for true user accounts that can be accessed from any device.
